@@ -10,7 +10,8 @@
 ## Commands 
 
 ### To start 
-- cd views 
+- cd views
+- npm install
 - npm run build 
 - cd .. 
 - npm run build 
