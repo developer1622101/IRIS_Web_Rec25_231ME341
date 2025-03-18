@@ -1,0 +1,46 @@
+{
+  "name": "iris_web_rec25_231me341",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "migrate": "prisma generate && prisma migrate dev",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "seedBookData": "node dist/models/seed/booksData2.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/preset-env": "^7.26.9",
+    "@babel/preset-react": "^7.26.3",
+    "@babel/preset-typescript": "^7.26.0",
+    "@faker-js/faker": "^9.6.0",
+    "@prisma/client": "^6.5.0",
+    "@types/axios": "^0.9.36",
+    "@types/express": "^5.0.0",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@types/react-router": "^5.1.20",
+    "@types/react-router-dom": "^5.3.3",
+    "axios": "^1.8.3",
+    "babel-loader": "^10.0.0",
+    "express": "^4.21.2",
+    "html-webpack-plugin": "^5.6.3",
+    "prisma": "^6.5.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router": "^7.3.0",
+    "react-router-dom": "^7.3.0",
+    "typescript": "^5.8.2",
+    "webpack": "^5.98.0",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-middleware": "^7.4.2",
+    "webpack-hot-middleware": "^2.26.1"
+  },
+  "devDependencies": {
+    "css-loader": "^7.1.2",
+    "style-loader": "^4.0.0"
+  }
+}

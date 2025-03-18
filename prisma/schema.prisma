@@ -1,0 +1,97 @@
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+enum Role {
+    Student
+    Librarian
+    Admin
+}
+
+model User {
+    name     String
+    rollNo   String  @id
+    email    String  @unique
+    password String
+    tokens   Token[]
+    role     Role
+}
+
+model BookWithEdition {
+    id              Int         @id
+    bookId          Int
+    editionId       Int
+    title           String
+    description     String
+    author          Author[]
+    publisher       Publisher[]
+    price           Int
+    genre           String
+    pages           Int
+    totalCount      Int
+    availableCount  Int
+    token           Token[]
+    isbn13          String
+    isbn10          String
+    noOfEditions    Int
+    cover           Cover[]
+    publish_date    DateTime
+    translated_from String
+    languages       String
+    translation_of  String
+    latest_revision String
+    revision        String
+}
+
+model Book {
+    id             Int         @id
+    bookId         Int
+    title          String
+    description    String
+    author         Author[]
+    publisher      Publisher[]
+    price          Int
+    genre          String
+    pages          Int
+    totalCount     Int
+    availableCount Int
+    cover          Cover[]
+}
+
+model Publisher {
+    id              Int               @id @default(autoincrement())
+    name            String            @unique
+    book            Book[]
+    bookWithEdition BookWithEdition[]
+}
+
+model Author {
+    id              Int               @id @default(autoincrement())
+    name            String            @unique
+    book            Book[]
+    bookWithEdition BookWithEdition[]
+}
+
+model Cover {
+    id                Int             @id @unique
+    bookWithEditionId Int
+    bookWithEdition   BookWithEdition @relation(fields: [bookWithEditionId], references: [id])
+    bookId            Int
+    book              Book            @relation(fields: [bookId], references: [id])
+}
+
+model Token {
+    id         Int               @id @default(autoincrement())
+    books      BookWithEdition[]
+    borrowerId String
+    borrower   User              @relation(fields: [borrowerId], references: [rollNo])
+    createdAt  DateTime
+    duration   Int
+    collected  Boolean
+    returned   Boolean
+}
