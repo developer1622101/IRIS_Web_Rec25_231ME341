@@ -1,12 +1,21 @@
-import express from 'express'
+import express, { Request, Response } from 'express'
+import path from 'path'
 
-import { studentLoginController } from '../controllers/auth/studentLogin'
+import { userLoginController } from '../controllers/auth/userLogin'
 const authRouter = express.Router()
 
-import { loginStudent } from '../models/authModel'
+import { userLogoutController } from '../controllers/auth/userLogout'
 
-authRouter.post('/login', studentLoginController)
+authRouter.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../views/build/index.html'))
+})
 
-authRouter.post('/logout', async () => {})
+authRouter.post('/login', (req: Request, res: Response) => {
+  userLoginController(req, res)
+})
+
+authRouter.put('/logout', (req: Request, res: Response) => {
+  userLogoutController(req, res)
+})
 
 export { authRouter }

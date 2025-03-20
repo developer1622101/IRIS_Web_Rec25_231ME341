@@ -1,8 +1,8 @@
 import { PrismaClient } from '@prisma/client'
 
-const prismaClient = new PrismaClient()
+const prisma = new PrismaClient()
 
-const loginStudent = async ({
+const loginUser = async ({
   rollNo_or_email,
   password
 }: {
@@ -10,13 +10,11 @@ const loginStudent = async ({
   password: string
 }) => {
   try {
-    await prismaClient.$connect()
-
     const student =
-      (await prismaClient.user.findUnique({
+      (await prisma.user.findUnique({
         where: { rollNo: rollNo_or_email }
       })) ||
-      (await prismaClient.user.findUnique({
+      (await prisma.user.findUnique({
         where: { email: rollNo_or_email }
       }))
 
@@ -28,11 +26,21 @@ const loginStudent = async ({
       return { success: false, msg: 'Invalid password.' }
     }
 
-    return { success: true, student }
+    const session = await prisma.session.create({
+      data: {
+        email: student.email
+      }
+    })
+
+    return { success: true, session }
   } catch (e) {
     console.log(e)
     return { success: false, msg: 'internal server error' }
+  } finally {
+    ;async () => {
+      await prisma.$disconnect()
+    }
   }
 }
 
-export { loginStudent }
+export { loginUser }

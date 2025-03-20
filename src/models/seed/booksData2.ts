@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import axios from 'axios'
-import { subjects } from '../utils/subjects'
+import { subjects } from '../../utils/subjects'
 
 /*   res =  response.data   
 //  res.works  is array of objects. each object representing a book. 
@@ -474,32 +474,50 @@ import { subjects } from '../utils/subjects'
 
 // lets populate the data.
 
+const prisma = new PrismaClient()
+
 const seedBooksDatabase = async () => {
   const books = new Set()
 
   // make  a set to track the handle the tracked books
   // using  .key property
 
-  const keys = new Set()
+  const keys = new Set() // to keep track of books already included.
 
-  const prisma = new PrismaClient()
+  const ids = new Set()
+  ids.add(0)
 
-  let i = 100000
+  const bookids = new Set()
+  bookids.add(0)
 
-  subjects.forEach(async (e, index) => {
+  let subjects2 = [
+    'science_fiction',
+    'thriller',
+    'horror',
+    'romance',
+    'historical_fiction',
+    'fantasy',
+    'politics_and_governement'
+  ]
+
+  for (const subject of subjects2) {
+    console.log('processing for ' + subject)
+
     const response = await axios
-      .get(`https://openlibrary.org/subjects/${e}.json?limit=100`)
+      .get(`https://openlibrary.org/subjects/${subject}.json?limit=50`)
       .then(res => res.data)
 
     // response.works -> Array of books
 
     //@ts-ignore
-    response.works.forEach(async (e, index1) => {
+    for (const e of response.works) {
+      console.log('processing for ' + e.key)
+
       if (!keys.has(e.key)) {
         keys.add(e.key)
 
         const editionsResponse = await axios
-          .get(`https://openlibrary.org/${e.key}/editions.json`)
+          .get(`https://openlibrary.org/${e.key}/editions.json?limit=10`)
           .then(res => res.data)
 
         //@ts-ignore
@@ -508,30 +526,257 @@ const seedBooksDatabase = async () => {
         //@ts-ignore
         const editions = editionsResponse?.entries
 
+        let bookId = 0
+        while (bookids.has(bookId)) {
+          bookId = 10000 + Math.ceil(Math.random() * 89999)
+        }
+
+        bookids.add(bookId)
+        // same bookId will be  assigned to all the editions of a book.
+
         //@ts-ignore
-        editions.forEach(async (e, index2) => {
-          if (index2 === 0) {
-            books.add({
-              title: e.title ?? null,
-              description: e.description?.value ?? null,
-              publishers: e.publishers ?? null, //array
-              publish_date: e.publish_date ?? null,
-              covers: e.covers ?? null, // array
-              translated_from: e.translated_from[0]?.key ?? null,
-              languages: e.languages[0]?.key ?? null,
-              number_of_pages: e.number_of_pages ?? null,
-              isbn_13: e.isbn_13[0] ?? null,
-              isbn_10: e.isbn_10[0] ?? null,
-              translation_of: e.translation_of ?? null,
-              latest_revision: e.latest_revision ?? null,
-              revision: e.revision ?? null,
-              edition_id: index2 + 1,
-              book_id: (index + 1) * i + index1,
-              id: (index + 1) * i + index1 + index2
+        let index = 1
+        for (const e of editions) {
+          console.log('processing for ' + e.title)
+
+          let id = 0
+
+          while (ids.has(id)) {
+            id = 100000 + Math.ceil(Math.random() * 899999)
+          }
+
+          ids.add(id)
+          // each edition will have unique id.
+
+          const price = Math.ceil(1000 + Math.random() * 8999)
+
+          const totalCount = Math.ceil(10 + Math.random() * 89)
+
+          // get author info
+
+          const authorsArray = e.authors ?? null
+
+          //@ts-ignore
+          const authorNames: string[] = []
+
+          const coversKey = []
+
+          if (authorsArray) {
+            //@ts-ignore
+            for (const e of authorsArray) {
+              const info = await axios
+                .get(`https://openlibrary.org/${e.key}.json`)
+                .then(res => res.data)
+
+              //@ts-ignore
+              if (info.name) {
+                //@ts-ignore
+                authorNames.push(info.name)
+              }
+            }
+          }
+
+          const publisherNames: string[] = e.publishers || []
+
+          console.log(e.languages)
+
+          let language
+          if (e.languages) {
+            console.log('flow reached here')
+            const languageKey = e.languages[0].key || null
+            if (languageKey) {
+              const response = await axios
+                .get(`https://openlibrary.org/${languageKey}`)
+                .then(res => res.data)
+
+              //@ts-ignore
+              language = response?.name || null
+            }
+          }
+
+          let translated_from
+
+          console.log(e.translated_from)
+
+          console.log('hi praveen')
+
+          if (e.translated_from) {
+            console.log('flow reached here')
+            const translated_fromKey = e.translated_from[0].key || null
+
+            if (translated_fromKey) {
+              const response = await axios
+                .get(`https://openlibrary.org/${translated_fromKey}`)
+                .then(res => res.data)
+
+              //@ts-ignore
+              translated_from = response?.name || null
+            }
+          }
+
+          const coversArray: number[] = e.covers || []
+
+          if (index === 1) {
+            // only the first item will be added to the books  table.
+
+            console.log('first entry ')
+            await prisma.book.create({
+              data: {
+                bookId,
+                id,
+                title: e.title ?? null,
+                description: e.description?.value ?? null,
+                pages: e.number_of_pages ?? null,
+                price: price,
+                genre: subject,
+                totalCount: totalCount,
+                availableCount: totalCount,
+                author: {
+                  connectOrCreate: authorNames.map(name => ({
+                    where: { name },
+                    create: { name }
+                  }))
+                },
+                publisher: {
+                  connectOrCreate: publisherNames.map(name => ({
+                    where: { name },
+                    create: { name }
+                  }))
+                }
+              }
+            })
+
+            await prisma.bookWithEdition.create({
+              data: {
+                title: e.title ?? null,
+                description: e.description?.value ?? null,
+                publish_date: e.publish_date ?? null,
+                translated_from: translated_from ?? null,
+                languages: language ?? null,
+                pages: e.number_of_pages ?? null,
+                isbn13: e.isbn_13?.[0] ?? null,
+                isbn10: e.isbn_10?.[0] ?? null,
+                translation_of: e.translation_of ?? null,
+                latest_revision: e.latest_revision ?? null,
+                revision: e.revision ?? null,
+                editionId: index + 1,
+                bookId,
+                id,
+                totalCount,
+                availableCount: totalCount,
+                price,
+                genre: subject,
+                noOfEditions: no_of_editions,
+                author: {
+                  connectOrCreate: authorNames.map(name => ({
+                    where: { name },
+                    create: { name }
+                  }))
+                },
+                publisher: {
+                  connectOrCreate: authorNames.map(name => ({
+                    where: { name },
+                    create: { name }
+                  }))
+                }
+              }
+            })
+
+            await prisma.cover.createMany({
+              data: coversArray.map(coverId => ({
+                coverId,
+                bookId: id,
+                bookWithEditionId: id
+              }))
+            })
+          } else {
+            await prisma.bookWithEdition.create({
+              data: {
+                title: e.title ?? null,
+                description: e.description?.value ?? null,
+                publish_date: e.publish_date ?? null,
+                translated_from: translated_from ?? null,
+                languages: language ?? null,
+                pages: e.number_of_pages ?? null,
+                isbn13: e.isbn_13?.[0] ?? null,
+                isbn10: e.isbn_10?.[0] ?? null,
+                translation_of: e.translation_of ?? null,
+                latest_revision: e.latest_revision ?? null,
+                revision: e.revision ?? null,
+                editionId: index + 1,
+                bookId,
+                id,
+                totalCount,
+                availableCount: totalCount,
+                price,
+                genre: subject,
+                noOfEditions: no_of_editions,
+                author: {
+                  connectOrCreate: authorNames.map(name => ({
+                    where: { name },
+                    create: { name }
+                  }))
+                },
+                publisher: {
+                  connectOrCreate: publisherNames.map(name => ({
+                    where: { name },
+                    create: { name }
+                  }))
+                }
+              }
+            })
+
+            await prisma.cover.createMany({
+              data: coversArray.map(coverId => ({
+                coverId,
+                bookWithEditionId: id
+              }))
             })
           }
-        })
+          index++
+        }
       }
-    })
-  })
+    }
+  }
 }
+
+/*
+//@ts-ignore
+const works = []
+
+const b = async () => {
+  let subjects2 = ['fiction', 'mathematics']
+
+  for (const subject in subjects2) {
+    const response = await axios
+      .get(`https://openlibrary.org/subjects/${subject}.json?limit=100`)
+      .then(res => res.data)
+
+    //@ts-ignore
+    works.push({ subject, works: response.works })
+    console.log(works.length)
+  }
+}
+
+const c = async () => {
+  console.log(works.length)
+}
+
+const d = async () => {
+  await b()
+  await c()
+}
+
+d()
+*/
+
+seedBooksDatabase()
+  .catch(e => {
+    console.log(e)
+  })
+  .finally(async () => await prisma.$disconnect())
+
+// forEach  makes all the calls on the elements asynchronously , thats why I was getting too many requests.
+// for .. of waits untils all the api calls are completed.  it runs through all the elements sequentially.
+
+// added limit of 10 editions.
