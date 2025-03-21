@@ -25,6 +25,7 @@ const Login = () => {
             setError('internal server error');
         }
     }
+    const [count, setCount] = useState(0);
     return (
         <div>
 
@@ -44,6 +45,10 @@ const Login = () => {
                 {error}
             </div>
 
+            <div>
+                {count}
+            </div>
+            <div> <button onClick={() => setCount(count => count + 1)} > +   </button>  </div>
         </div>
     )
 }

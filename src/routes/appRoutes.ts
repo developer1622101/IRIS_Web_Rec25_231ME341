@@ -1,12 +1,13 @@
 import Route from 'express'
 import path from 'path'
-
-const appRoutes = Route()
-
 import { checkLoggedIn } from '../middlewares/checkLoggedIn'
 
-appRoutes.use(checkLoggedIn)
+const appRouter = Route()
 
-appRoutes.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../views/build/index.html'))
+appRouter.use(checkLoggedIn)
+
+appRouter.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../../views/build/index.html'))
 })
+
+export { appRouter }

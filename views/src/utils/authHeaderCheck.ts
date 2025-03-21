@@ -27,13 +27,18 @@ export const authHeaderCheck = async () => {
           ['loggedIn', 'email', 'role'],
           ['loggedIn', 'email', 'role']
         )
+        if (!check) {
+          return false
+        }
 
-        return decryptedAuthHeader
+        return decryptedObject
       } else {
         return false
       }
     } catch (e) {
       return false
     }
+  } else {
+    return false
   }
 }

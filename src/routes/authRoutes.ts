@@ -7,7 +7,7 @@ const authRouter = express.Router()
 import { userLogoutController } from '../controllers/auth/userLogout'
 
 authRouter.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../views/build/index.html'))
+  res.sendFile(path.resolve(__dirname, '../../views/build/index.html'))
 })
 
 authRouter.post('/login', (req: Request, res: Response) => {

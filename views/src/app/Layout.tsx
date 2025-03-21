@@ -1,72 +1,38 @@
 import { Outlet } from "react-router-dom";
-
-
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-
-import { decrypt } from "../utils/encrypt";
-
-import { UserProvider } from "./contexts/UserContext";
-
-
-import { Role } from "@prisma/client";
-import { isTSInterface } from "../utils/isTSInterface";
-
+import { UserContext } from "./contexts/UserContext"
 import { useUser } from "./contexts/UserContext";
+import { authHeaderCheck } from "../utils/authHeaderCheck";
 
 import { UserInterface } from "../utils/UserInterface";
 
-import { authHeaderCheck } from "../utils/authHeaderCheck";
-
-
-
-
-
 const Layout = () => {
 
-
-    const UserContextState = useUser();
-
-    let user;
-    let setUser;
-
-    if (UserContextState) {
-        user = UserContextState.user;
-        setUser = UserContextState.setUser;
-    }
-
-
-
-
-
-
+    const initialUserInterface: UserInterface = { loggedIn: false };
+    const [user, setUser] = useState(initialUserInterface);
 
     useEffect(() => {
-
-        const isUserLogged = authHeaderCheck();
-
-        if (isUserLogged) {
-
-
+        const a = async () => {
+            const isUserLogged = await authHeaderCheck();
+            if (isUserLogged && JSON.stringify(isUserLogged) !== JSON.stringify(user)) {
+                setUser(isUserLogged);
+            }
         }
-    }, [])
-
-
-
-
+        a();
+    }, [user])
 
 
 
     return (
-        <UserProvider >
+        <UserContext.Provider value={{ user, setUser }}>
             <Header />
             <div>
                 <Outlet />
             </div>
             <Footer />
-        </UserProvider>
-
+        </UserContext.Provider>
     )
 }
 

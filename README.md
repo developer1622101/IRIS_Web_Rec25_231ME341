@@ -40,11 +40,6 @@
     - Data collected using OpenLibrary Api.
     - Not completed yet. 
 
-
-
-
- 
-
 - Views
   - used create-react-app for react frontend
   - go to views 

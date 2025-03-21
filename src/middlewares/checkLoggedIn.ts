@@ -15,7 +15,7 @@ const checkLoggedIn = async (
   const userCookie = req.signedCookies['userCookie']
 
   if (!userCookie) {
-    next()
+    return next()
   }
 
   const decryptedObject = userCookieValidator(userCookie)
@@ -32,15 +32,16 @@ const checkLoggedIn = async (
   })
 
   if (user && session) {
-    req.headers = {
-      authorization: encrypt(
+    res.setHeader(
+      'authorization',
+      encrypt(
         JSON.stringify({
           loggedIn: true,
           email: user.email,
           role: user.role
         })
       )
-    }
+    )
     return next()
   } else {
     return next()

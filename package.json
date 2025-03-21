@@ -6,7 +6,8 @@
   "scripts": {
     "migrate": "prisma generate && prisma migrate dev",
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "node dist/server.js", 
+    "buildFE" : "cd views && npm run build " , 
     "seedBookData": "node dist/models/seed/booksData2.js"
   },
   "keywords": [],
