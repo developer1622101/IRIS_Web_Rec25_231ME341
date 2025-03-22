@@ -19,14 +19,15 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<App />} ></Route>
-        <Route path='/auth/login' element={<Login />} />
-        <Route path='/app' element={<Layout />} >
-          <Route index element={<Dashboard />} />
-          <Route path='books' element={<Books />} />
-          <Route path='authors' element={<Authors />} />
-          <Route path='publishers' element={<Publishers />} />
-          <Route path='profile' element={<Profile />} />
+        <Route path='/' element={<App />} >
+          <Route path='/auth/login' element={<Login />} />
+          <Route path='/app' element={<Layout />} >
+            <Route index element={<Dashboard />} />
+            <Route path='books' element={<Books />} />
+            <Route path='authors' element={<Authors />} />
+            <Route path='publishers' element={<Publishers />} />
+            <Route path='profile' element={<Profile />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

@@ -20,6 +20,7 @@ redisClient.connect().catch(console.error)
 
 export const userLoginController = async (req: Request, res: Response) => {
   const { rollNo_or_email, password } = req.body
+  console.log(typeof password)
   const hashedPassword = createHash('sha256').update(password).digest('hex')
   const result = await loginUser({ rollNo_or_email, password: hashedPassword })
 

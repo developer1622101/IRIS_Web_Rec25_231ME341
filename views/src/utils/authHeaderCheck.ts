@@ -5,6 +5,7 @@ import axios from 'axios'
 export const authHeaderCheck = async () => {
   const headers = new Headers()
   const authHeader = headers.get('authorization')
+  console.log(authHeader)
   if (authHeader) {
     try {
       const responseObject = await axios

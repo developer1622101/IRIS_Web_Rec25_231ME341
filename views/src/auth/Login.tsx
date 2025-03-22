@@ -1,5 +1,6 @@
 import React from 'react'
 import { useState } from 'react';
+import { useUser } from '../app/contexts/UserContext';
 
 const Login = () => {
 
@@ -17,7 +18,8 @@ const Login = () => {
                 setError(response.msg);
             }
             else {
-                window.location.assign('/');
+                console.log('logged In successfully.')
+                // window.location.assign('/'); 
             }
         }
         catch (e) {
@@ -25,32 +27,64 @@ const Login = () => {
             setError('internal server error');
         }
     }
-    const [count, setCount] = useState(0);
-    return (
-        <div>
 
-            <div  >
-                <form onSubmit={handleSubmit}  >
 
-                    <label htmlFor='rollNo_or_email'  > Roll No./Email  </label>
-                    <input placeholder='231ME341' type='text' name='rollNo_or_email' required />
-                    <label htmlFor='password'> Password </label>
-                    <input type='password' required name='password' />
-                    <button type='submit'> Submit  </button>
-                </form>
+    const UserContextState = useUser();
+
+
+
+    if (UserContextState && UserContextState.user.loggedIn) {
+
+        const { user, setUser } = UserContextState;
+
+        return (
+            <div className='loginDiv'>
+
+
+                <div> You are already logged in as  {user.email}  </div>
+
+                <button onClick={async () => {
+                    await axios.put('/auth/logout');
+                    setUser({ loggedIn: false });
+                }} > Logout    </button >
+
+            </div>)
+
+
+    }
+
+    else {
+
+
+        return (
+            <div className='loginDiv'>
+                <div style={{ fontWeight: 'bold', fontSize: 'larger' }} > Login to BookHive   </div>
+                <div className='loginFormBox'>
+                    <form onSubmit={handleSubmit}    >
+
+                        <div className='formDiv'>
+                            <div>
+                                <label htmlFor='rollNo_or_email'  > Roll No./Email  </label> <br />
+                                <input placeholder='231ME341' type='text' name='rollNo_or_email' required
+                                    style={{ color: 'black' }}
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor='password'> Password </label> <br />
+                                <input type='password' required name='password' style={{ color: 'black' }} />
+                            </div>
+                            <button type='submit' style={{ backgroundColor: 'black', fontSize: 'large', fontWeight: 'bold', cursor: 'pointer', border: '1px solid white', padding: '5px' }}   > Submit  </button>
+                        </div>
+                    </form>
+                </div>
+                <div className='loginErrorBox'>
+                    {error}
+                </div>
             </div>
+        )
+    }
 
 
-            <div>
-                {error}
-            </div>
-
-            <div>
-                {count}
-            </div>
-            <div> <button onClick={() => setCount(count => count + 1)} > +   </button>  </div>
-        </div>
-    )
 }
 
 export default Login

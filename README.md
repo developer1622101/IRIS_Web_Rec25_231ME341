@@ -98,7 +98,7 @@
   - coverId is the main property. 
   - For a bookA , take its id say 123456  and find the covers where bookId is equal to 123456 and select coverId.  
   - Use of coverId 
-    - Source of image = 'http://covers.openlibrary.org/b/id/${coverId}-S.jpg 
+    - Source of image = 'https://covers.openlibrary.org/b/id/${coverId}-S.jpg 
     - S can be replaced with M and L. Represents size of image.
   - We can obtain all the images of a particular book using its 'id' this way. 
 
@@ -144,6 +144,22 @@
 - Stringify and  encrypt the Auth object.  -> AuthHexString 
 - set headers  : key => authorization , value => AuthHexString. 
 - /decrypt route setup to decrypt the authHeaders. 
-- From frontend we will send post request to check if AuthHeader  is valid.   
+- From frontend we will send post request to check if AuthHeader  is valid. 
+
+# 23 March 
+## There were few issues here in this above authentication Approach. 
+
+## I was trying to incorrectly read the headers in the frontend , I assumed that if I do  res.setHeaders()  for the get requests using the checkLoggedIn middleware   , then I can just access those headers in  my react frontend once the page loads. If I want to read those headers  then I will have to do a get request from frontend , using useEffect hook. 
+## So I have decided to set up an api ,  and I will do a fetch request from the root App file. Rest of the app is nested in this route using react-router-dom.
+   -- <Route path='/' element = { <App/> } >  ...Rest of the routes.. </Route>
+## CheckedLoggin2  api route 
+## The fetch request will check  if the user is logged in  by validated the encrypted cookie. If the cookie is valid then the api sends basic userInfo in json model.
+## This data is stored and modified  using the useUser hook from userContext. 
+
+
+
+  
+
+
 
 ## Backend of Auth is completed , Frontend of auth  is incomplete so errors are present in few frontend files. 

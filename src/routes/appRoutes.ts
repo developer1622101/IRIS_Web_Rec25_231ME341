@@ -4,7 +4,7 @@ import { checkLoggedIn } from '../middlewares/checkLoggedIn'
 
 const appRouter = Route()
 
-appRouter.use(checkLoggedIn)
+//appRouter.use(checkLoggedIn)
 
 appRouter.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../../views/build/index.html'))

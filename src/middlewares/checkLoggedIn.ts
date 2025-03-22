@@ -42,6 +42,8 @@ const checkLoggedIn = async (
         })
       )
     )
+    res.setHeader('Access-Contol-Expose-Header', 'authorization')
+
     return next()
   } else {
     return next()

@@ -6,9 +6,11 @@
   "scripts": {
     "migrate": "prisma generate && prisma migrate dev",
     "build": "tsc",
-    "start": "node dist/server.js", 
-    "buildFE" : "cd views && npm run build " , 
-    "seedBookData": "node dist/models/seed/booksData2.js"
+    "start" : "cd views && npm run build && cd .. && node dist/server.js " , 
+    "seedBookData": "node dist/models/seed/booksData2.js" , 
+    "devFE" : "cd views && npm run start" ,
+    "server" : "node dist/server.js" 
+    
   },
   "keywords": [],
   "author": "",
