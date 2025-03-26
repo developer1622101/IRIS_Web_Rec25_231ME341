@@ -19,4 +19,16 @@ const useUser = () => {
   }
 }
 
-export { useUser, UserContext }
+const getUser = () => {
+
+  const UserContextState = useContext(UserContext);
+  if (UserContextState) {
+    const { user } = UserContextState;
+    return user;
+  }
+  else {
+    return { loggedIn: false };
+  }
+}
+
+export { useUser, UserContext, getUser }

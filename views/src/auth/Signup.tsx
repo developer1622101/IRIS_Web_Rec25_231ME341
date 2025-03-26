@@ -3,24 +3,28 @@ import { useState } from 'react';
 import { useUser } from '../app/contexts/UserContext';
 import { NavLink } from 'react-router-dom';
 
-const Login = () => {
+const Signup = () => {
 
     const [error, setError] = useState('');
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+
         e.preventDefault();
         setError('');
         const formData = new FormData(e.currentTarget);
-        const rollNo_or_email = formData.get('rollNo_or_email');
+        const email = formData.get('email');
         const password = formData.get('password');
 
         try {
-            const response = await fetch("/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ rollNo_or_email, password }) }).then(res => res.json());
-            if (!response.success) {
-                setError(response.msg);
+            const response = await fetch("/auth/signup", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password }) });
+
+            const data = await response.json();
+            if (response.status !== 201) {
+                setError(data.msg);
             }
             else {
                 console.log('logged In successfully.')
+                setError(data.msg);
                 window.location.assign('/app');
             }
         }
@@ -30,17 +34,25 @@ const Login = () => {
         }
     }
 
+
     const UserContextState = useUser();
 
+
     if (UserContextState && UserContextState.user.loggedIn) {
+
         const { user, setUser } = UserContextState;
+
         return (
             <div className='loginDiv'>
+
+
                 <div> You are already logged in as  {user.email}  </div>
+
                 <button onClick={async () => {
                     await axios.put('/auth/logout');
                     setUser({ loggedIn: false });
                 }} > Logout    </button >
+
             </div>)
     }
 
@@ -49,14 +61,14 @@ const Login = () => {
 
         return (
             <div className='loginDiv'>
-                <div style={{ fontWeight: 'bold', fontSize: 'larger' }} > Login to BookHive   </div>
+                <div style={{ fontWeight: 'bold', fontSize: 'larger' }} > Create a BookHive Account </div>
                 <div className='loginFormBox'>
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit}    >
 
                         <div className='formDiv'>
                             <div>
-                                <label htmlFor='rollNo_or_email'  > Roll No./Email  </label> <br />
-                                <input placeholder='231ME341' type='text' name='rollNo_or_email' required
+                                <label htmlFor='email'  > Email  </label> <br />
+                                <input placeholder='231ME341' type='text' name='email' required
                                     style={{ color: 'black' }}
                                 />
                             </div>
@@ -68,7 +80,7 @@ const Login = () => {
                         </div>
                     </form>
                     <div>
-                        <  NavLink to='/auth/signup' > Sign Up  </NavLink>
+                        <  NavLink to='/auth/login' > Log In   </NavLink>
                     </div>
                 </div>
                 <div className='loginErrorBox'>
@@ -79,4 +91,4 @@ const Login = () => {
     }
 }
 
-export default Login
+export default Signup

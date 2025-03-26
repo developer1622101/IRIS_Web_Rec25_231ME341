@@ -24,14 +24,21 @@ const checkLoggedIn2 = async (req: Request, res: Response) => {
 
     const user = await prisma.user.findUnique({
       where: { email: decryptedObject.email },
-      select: { email: true, role: true }
+      select: { email: true, id: true, role: true }
     })
 
     if (user && session) {
+      const profile = await prisma.profile.findUnique({
+        where: { userId: user.id },
+        omit: { userId: true }
+      })
+
       return res.json({
         loggedIn: true,
         email: user.email,
-        role: user.role
+        role: user.role,
+        id: user.id,
+        profile
       })
     } else {
       return res.status(200).json({ loggedIn: false })

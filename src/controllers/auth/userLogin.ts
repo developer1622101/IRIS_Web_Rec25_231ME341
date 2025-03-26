@@ -3,20 +3,7 @@ import { Request, Response } from 'express'
 
 import { createHash } from 'crypto'
 
-import { createClient } from 'redis'
-
 import { encrypt } from '../../utils/encrypt'
-
-const redisClient = createClient({
-  socket: {
-    host: '',
-    port: 33
-  }
-})
-
-redisClient.on('error', err => {})
-
-redisClient.connect().catch(console.error)
 
 export const userLoginController = async (req: Request, res: Response) => {
   const { rollNo_or_email, password } = req.body

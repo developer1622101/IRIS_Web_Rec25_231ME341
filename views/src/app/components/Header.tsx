@@ -48,8 +48,10 @@ const Header = () => {
 
         const logOut = async () => {
             await axios.put('/auth/logout');
-            setUser({ loggedIn: false });
+            window.location.reload();
         }
+
+
         return (<div className='headerDiv' >
             <NavLink to="/app"  > BookHive   </NavLink>
             <NavLink to="/app" > Dashboard   </NavLink>
@@ -76,6 +78,7 @@ const Header = () => {
         </div>
         )
     }
+
     else {
         return (
             <div className='headerDiv'  >

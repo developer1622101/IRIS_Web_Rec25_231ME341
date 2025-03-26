@@ -20,20 +20,4 @@ app.use('/auth', authRouter)
 app.use('/app', appRouter)
 app.use('/api', apiRouter)
 
-app.post('/decrypt', (req: Request, res: Response) => {
-  const authHeader = req.body.authHeader
-
-  if (!authHeader) {
-    res.status(400).json({ msg: 'Missing authHeader' })
-  }
-
-  if (typeof authHeader === 'string') {
-    const decryptedString: string = decrypt(authHeader)
-
-    res.status(200).json({ decryptedString })
-  } else {
-    res.status(400).json({ msg: 'Invalid authHeader' })
-  }
-})
-
 export { app }

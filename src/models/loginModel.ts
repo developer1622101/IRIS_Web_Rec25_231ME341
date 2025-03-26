@@ -2,27 +2,29 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
+import bcrypt from 'bcrypt'
+
 const loginUser = async ({
-  rollNo_or_email,
+  email,
   password
 }: {
-  rollNo_or_email: string
+  email: string
   password: string
 }) => {
   try {
-    const student =
-      (await prisma.user.findUnique({
-        where: { rollNo: rollNo_or_email }
-      })) ||
-      (await prisma.user.findUnique({
-        where: { email: rollNo_or_email }
-      }))
+    const student = await prisma.user.findUnique({
+      where: { email }
+    })
 
     if (!student) {
-      return { sucess: false, msg: 'Invalid RollNo./Email' }
+      return { sucess: false, msg: 'Invalid Email' }
     }
 
-    if (password != student.password) {
+    const hashedPassword = student.password
+
+    const check = await bcrypt.compare(password, hashedPassword)
+
+    if (!check) {
       return { success: false, msg: 'Invalid password.' }
     }
 
