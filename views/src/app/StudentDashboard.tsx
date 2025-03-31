@@ -147,6 +147,9 @@ const StudentDashboard = () => {
                                 book.borrowedAt}  <br />
                             dueDate : {//@ts-ignore 
                                 book.dueDate}
+                            collected : { //@ts-ignore
+                                book.collected
+                            }
                         </div>))
                     }
                 </div>
@@ -163,7 +166,7 @@ const StudentDashboard = () => {
                         (<div style={{ border: '1px solid white', padding: '4px', margin: '2px' }}>
 
                             { //@ts-ignore 
-                                `createdAt : ${token.createdAt} ,  dueDate : ${token.dueDate} ,  dues: ${token.dues} `}
+                                `createdAt : ${token.createdAt} ,  dueDate : ${token.dueDate} ,  dues: ${token.dues} , collected : ${token.collected ? 'YES' : "No"} `}
                             <br />
                             Books : <br />
 
