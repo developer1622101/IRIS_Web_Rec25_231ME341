@@ -29,7 +29,6 @@
    -  Books and Journals 
        - All features listed  in  docs.
        - Except: 
-            - No further borrowing can be done of the same book
             - No implementation of journals.
    -  Dues Management 
        - Automatic dues updating  using node-cron. file location : /src/models/schedules/updateDues.ts
