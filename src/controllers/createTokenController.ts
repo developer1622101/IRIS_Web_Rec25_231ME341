@@ -35,6 +35,7 @@ export const createTokenController = async (req: Request, res: Response) => {
 
       if (token) {
         res.status(200).json({ msg: 'U have already borrowed the book' })
+        return
       }
 
       const currentDate = new Date()

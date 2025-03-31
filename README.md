@@ -40,6 +40,10 @@
    To match object keys with an interface.
 - api for books data - 'https://openlibrary.org' , Data seeded -> /src/models/seed/bookData2.js
 
+# issues 
+- tsc in root directory is not ignoring node_modules.
+- in /src/utils/encrypt.js  ,  process.env.ENCRYPTION_KEY and process.env.ENCRYPTION_IV are coming as undefined.
+
 
 # extra..
 

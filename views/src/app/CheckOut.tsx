@@ -66,6 +66,11 @@ const CheckOut = () => {
 
                 const data = await response.data;
 
+                if (response.status === 200) {
+                    //@ts-ignore
+                    setError(data.msg)
+                }
+
 
 
                 if (response.status === 201) {
@@ -82,6 +87,8 @@ const CheckOut = () => {
 
         return (
             <div>
+
+                <div> {error} </div>
 
                 <div>
 
