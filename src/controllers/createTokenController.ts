@@ -19,6 +19,24 @@ export const createTokenController = async (req: Request, res: Response) => {
       !Number.isNaN(parseInt(id)) &&
       typeof duration === 'number'
     ) {
+      const token = await prisma.token.findFirst({
+        where: {
+          borrowerId: req.userId,
+          books: {
+            some: {
+              id: {
+                equals: parseInt(id)
+              }
+            }
+          },
+          returned: false
+        }
+      })
+
+      if (token) {
+        res.status(200).json({ msg: 'U have already borrowed the book' })
+      }
+
       const currentDate = new Date()
 
       const dueDate = new Date(
