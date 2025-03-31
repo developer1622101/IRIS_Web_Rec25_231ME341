@@ -1,5 +1,7 @@
-const key = process.env.ENCRYPTION_KEY
-const iv = process.env.ENCRYPTION_IV
+const key = '491c4256c432da6ee27ee4859f014e743401fe5b94c4dabb560b3e4f0688b124'
+const iv = 'afa0c5218e544729e6b2a5475a6d28f7'
+
+// Issue here , unable to read   process.env.ENCRYPTION_KEY
 
 import * as crypto from 'crypto'
 

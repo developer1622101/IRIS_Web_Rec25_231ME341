@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react'
-import { URLSearchParams } from 'url'
 
 import { BookWithEdition } from '@prisma/client';
-import { getUser } from './contexts/UserContext';
+import { useGetUser } from './contexts/UserContext';
 
+import { useSearchParams } from 'react-router';
 
+import axios from 'axios';
 
 const CheckOut = () => {
 
-    const id = new URLSearchParams().get('id');
+
+    const [params, setParams] = useSearchParams();
+
+    const id = params.get('id');
+
 
 
     const [book, setBook] = useState<BookWithEdition | null>(null);
@@ -19,49 +24,61 @@ const CheckOut = () => {
 
     const [duration, setDuration] = useState(7);
 
-    const userDetails = getUser();
+    const userDetails = useGetUser();
 
 
 
     useEffect(() => {
-
         const fetchBook = async () => {
 
             try {
-                const fetchedBook = await axios.get(`/api/bookWithEdition?id=${id}`).then(res => res.data);
+                const data = await axios.get(`/api/public/bookWithEdition?id=${id}`).then(res => res.data);
                 //@ts-ignore
-                setBook(fetchBook);
+                setBook(data.book);
             }
             catch (e) {
                 console.log(e);
                 setError('Error fetching the book.');
             }
-
         }
-
-    })
+        fetchBook()
+    }, [])
 
 
 
 
     if (!userDetails.role) {
-
-        useEffect(() => { window.location.assign('/app/profile') }, [])
+        useEffect(() => window.location.assign('/app/profile'), [])
 
         return (
-            <div> You are not authorised to visit this page  </div>
+            <div>Unauthorised access </div>
         )
-
     }
 
     else {
 
-
         const generateToken = async () => {
 
-            await axios.post('/api/createToken', { id, duration })
-        }
 
+            try {
+                const response = await axios.post('/api/student/createToken', { id, duration })
+
+
+                const data = await response.data;
+
+
+
+                if (response.status === 201) {
+                    setError('token  created successfully.')
+                    window.location.assign('/app')
+                }
+
+            }
+            catch (e) {
+                console.log(e);
+                setError('Error generating the token.');
+            }
+        }
 
         return (
             <div>
@@ -81,11 +98,15 @@ const CheckOut = () => {
                     {showDetails &&
                         <div>
                             <li> Description:  {book?.description} </li>
-                            <li> Authors :  </li>
-                            <li> Publishers: </li>
+                            <li> Authors    : { //@ts-ignore
+                                book?.author.map(e => <li style={{ cursor: 'pointer' }} onClick={() => { window.location.assign(`/app/author?id=${e.id}`) }}>  {e.name}   </li>)}
+                            </li>
+                            <li> Publishers :{ //@ts-ignore
+                                book?.publisher.map(e => <li style={{ cursor: 'pointer' }} onClick={() => { window.location.assign(`/app/author?id=${e.id}`) }}>  {e.name}   </li>)}
+                            </li>
                             <li> Price : {book?.price} </li>
                             <li> Genre : {book?.genre} </li>
-                            <li> Pages   : {book?.pages} </li>
+                            <li> Pages : {book?.pages} </li>
                             <li> isbn13 : {book?.isbn13}    </li>
                             <li> isbn10 : {book?.isbn10}   </li>
                             <li> publish_date  : {book?.publish_date} </li>

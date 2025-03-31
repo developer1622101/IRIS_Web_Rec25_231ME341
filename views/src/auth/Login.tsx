@@ -11,11 +11,14 @@ const Login = () => {
         e.preventDefault();
         setError('');
         const formData = new FormData(e.currentTarget);
-        const rollNo_or_email = formData.get('rollNo_or_email');
+        const email = formData.get('email');
         const password = formData.get('password');
 
+        console.log(email);
+        console.log(password)
+
         try {
-            const response = await fetch("/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ rollNo_or_email, password }) }).then(res => res.json());
+            const response = await fetch("/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password }) }).then(res => res.json());
             if (!response.success) {
                 setError(response.msg);
             }
@@ -55,8 +58,8 @@ const Login = () => {
 
                         <div className='formDiv'>
                             <div>
-                                <label htmlFor='rollNo_or_email'  > Roll No./Email  </label> <br />
-                                <input placeholder='231ME341' type='text' name='rollNo_or_email' required
+                                <label htmlFor='email'  > Email  </label> <br />
+                                <input placeholder='johndoe@gmail.com' type='text' name='email' required
                                     style={{ color: 'black' }}
                                 />
                             </div>

@@ -1,20 +1,39 @@
-import { loginUser } from '../../models/loginModel'
 import { Request, Response } from 'express'
-
-import { createHash } from 'crypto'
 
 import { encrypt } from '../../utils/encrypt'
 
+import bcrypt from 'bcrypt'
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
+
 export const userLoginController = async (req: Request, res: Response) => {
-  const { rollNo_or_email, password } = req.body
-  console.log(typeof password)
-  const hashedPassword = createHash('sha256').update(password).digest('hex')
-  const result = await loginUser({ rollNo_or_email, password: hashedPassword })
+  const { email, password } = req.body
 
-  if (result.success) {
-    const userData = result.session
+  try {
+    const student = await prisma.user.findUnique({
+      where: { email }
+    })
 
-    const cookieData = encrypt(JSON.stringify(userData))
+    if (!student) {
+      return res.status(401).json({ sucess: false, msg: 'Invalid Email' })
+    }
+
+    const hashedPassword = student.password
+
+    const check = await bcrypt.compare(password, hashedPassword)
+
+    if (!check) {
+      return res.status(401).json({ success: false, msg: 'Invalid password.' })
+    }
+
+    const session = await prisma.session.create({
+      data: {
+        email: student.email
+      }
+    })
+
+    const cookieData = encrypt(JSON.stringify(session))
 
     res.cookie('userCookie', cookieData, {
       httpOnly: true,
@@ -25,7 +44,12 @@ export const userLoginController = async (req: Request, res: Response) => {
     return res
       .status(200)
       .json({ success: true, msg: 'logged in successfully' })
-  } else {
-    return res.status(401).json({ success: false, msg: result.msg })
+  } catch (e) {
+    console.log(e)
+    return { success: false, msg: 'internal server error' }
+  } finally {
+    ;async () => {
+      await prisma.$disconnect()
+    }
   }
 }

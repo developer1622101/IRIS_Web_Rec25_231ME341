@@ -7,6 +7,8 @@ import { UserInterface, } from './utils/UserInterface';
 
 import { Outlet } from 'react-router';
 import { UserContext } from './app/contexts/UserContext';
+import { NavLink } from 'react-router-dom';
+
 
 function App() {
 
@@ -20,33 +22,40 @@ function App() {
       console.log('running useEffect ')
 
       try {
-        const response = await axios.get('/api/checkLoggedIn');
+        const response = await axios.get('/api/public/checkLoggedIn');
         if (response.status === 200) {
           const data = await response.data;
 
           if (JSON.stringify(user) !== JSON.stringify(data)) {
-            //@ts-ignore 
+            //@ts-ignore  
             setUser(data);
           }
-          console.log(data);
+
+
+          console.log(user.loggedIn)
         }
       }
       catch (e) {
         console.log(e);
       }
-
     }
     a();
   }, [user])
 
 
+
   return (
     <div>
       <UserContext.Provider value={{ user, setUser }} >
-        <Outlet />
+        {user.loggedIn ?
+          <Outlet /> : <div style={{ color: 'black' }} >
+            You are not logged in.
+            <NavLink to='/auth/login' style={{ color: 'black' }}  > Login  </NavLink>
+            <NavLink to='/auth/signup' style={{ color: 'black' }}  > Signup  </NavLink>
+          </div>}
       </UserContext.Provider>
     </div>
-  );
+  )
 }
 
 export default App;

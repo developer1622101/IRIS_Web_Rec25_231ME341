@@ -15,6 +15,7 @@ import Login from './auth/Login';
 import Signup from './auth/Signup';
 
 import CheckOut from './app/CheckOut';
+import AuthLayout from './app/AuthLayout';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -24,11 +25,8 @@ root.render(
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<App />} >
-          <Route path='/auth' element={<App />}>
-            <Route path='/auth/login' element={<Login />} />
-            <Route path='/auth/signup' element={<Signup />} />
-          </Route>
-          <Route path='/app' element={<Layout />} >
+
+          <Route path='app' element={<Layout />} >
             <Route index element={<Dashboard />} />
             <Route path='books' element={<Books />} />
             <Route path='book' element={<Book />} />
@@ -38,6 +36,15 @@ root.render(
             <Route path='profile' element={<Profile />} />
           </Route>
         </Route>
+
+        <Route path='/auth' element={<AuthLayout />} >
+          <Route path='login' element={<Login />} />
+          <Route path='signup' element={<Signup />} />
+        </Route>
+
+
+
+
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

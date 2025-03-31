@@ -1,6 +1,8 @@
+// this will check if user is logged in and adds the role to the req , just that.
+
 import { NextFunction, Request, Response } from 'express'
 
-import { PrismaClient, Profile, Role } from '@prisma/client'
+import { PrismaClient, Role } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
@@ -9,13 +11,12 @@ import { userCookieValidator } from '../utils/userCookieValidator'
 declare module 'express-serve-static-core' {
   interface Request {
     role: Role | null
-    profile: Profile | null
-    userId: number | null
-    verificationCreated: boolean
+    userId: number
+    banned: boolean
   }
 }
 
-const checkLoggedInMiddleware = async (
+const checkLoggedInMiddleware2 = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -36,7 +37,12 @@ const checkLoggedInMiddleware = async (
 
   const user = await prisma.user.findUnique({
     where: { email: decryptedObject.email },
-    select: { id: true, role: true }
+    select: {
+      id: true,
+      role: true,
+      banned: true,
+      Profile: { omit: { userId: true } }
+    }
   })
 
   if (user && session) {
@@ -44,23 +50,12 @@ const checkLoggedInMiddleware = async (
 
     req.userId = user.id
 
-    const profile = await prisma.profile.findUnique({
-      where: { userId: user.id }
-    })
-
-    const verification = await prisma.verifications.findFirst({
-      where: { userId: user.id }
-    })
-
-    const verificationCreated = verification ? true : false
-
-    req.profile = profile
-
-    req.verificationCreated = verificationCreated
+    req.banned = user.banned
 
     return next()
   } else {
     return res.redirect('/auth/login')
   }
 }
-export { checkLoggedInMiddleware }
+
+export { checkLoggedInMiddleware2 }

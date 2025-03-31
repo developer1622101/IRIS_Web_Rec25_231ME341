@@ -52,7 +52,8 @@ export const allTokensController = async (req: Request, res: Response) => {
           dueDate: true,
           dues: true,
           books: { select: { id: true, title: true, description: true } },
-          collected: true
+          collected: true,
+          returned: true
         }
       }
     }

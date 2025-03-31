@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useUser } from '../app/contexts/UserContext';
 import { NavLink } from 'react-router-dom';
 
+import axios from 'axios';
+
 const Signup = () => {
 
     const [error, setError] = useState('');
@@ -18,19 +20,23 @@ const Signup = () => {
         try {
             const response = await fetch("/auth/signup", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password }) });
 
+
             const data = await response.json();
-            if (response.status !== 201) {
-                setError(data.msg);
-            }
-            else {
-                console.log('logged In successfully.')
-                setError(data.msg);
-                window.location.assign('/app');
-            }
+
+            //const response = await axios.post("/auth/signup", { email, password });
+
+
+            //const data = await response.data;
+
+            //@ts-ignore
+            setError(data.msg);
+            // alert(data.msg); 
+
+
         }
         catch (e) {
             console.log(e);
-            setError('internal server error');
+            // alert(JSON.stringify(e));
         }
     }
 
@@ -68,7 +74,7 @@ const Signup = () => {
                         <div className='formDiv'>
                             <div>
                                 <label htmlFor='email'  > Email  </label> <br />
-                                <input placeholder='231ME341' type='text' name='email' required
+                                <input placeholder='johndoe@gmail.com' type='text' name='email' required
                                     style={{ color: 'black' }}
                                 />
                             </div>

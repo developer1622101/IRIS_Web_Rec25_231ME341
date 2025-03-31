@@ -24,7 +24,7 @@ const checkLoggedIn2 = async (req: Request, res: Response) => {
 
     const user = await prisma.user.findUnique({
       where: { email: decryptedObject.email },
-      select: { email: true, id: true, role: true }
+      select: { email: true, id: true, role: true, banned: true }
     })
 
     if (user && session) {
@@ -38,6 +38,7 @@ const checkLoggedIn2 = async (req: Request, res: Response) => {
         email: user.email,
         role: user.role,
         id: user.id,
+        banned: user.banned,
         profile
       })
     } else {

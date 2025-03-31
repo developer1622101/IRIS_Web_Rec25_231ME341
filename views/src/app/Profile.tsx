@@ -1,5 +1,5 @@
 import React from 'react'
-import { getUser } from './contexts/UserContext'
+import { useGetUser } from './contexts/UserContext'
 
 import axios from 'axios';
 
@@ -9,7 +9,7 @@ import { NavLink } from 'react-router-dom';
 
 const Profile = () => {
 
-    const userDetails = getUser();
+    const userDetails = useGetUser();
 
     const role = userDetails.role;
 
@@ -28,15 +28,22 @@ const Profile = () => {
         const formData = new FormData(e.currentTarget);
         const rollNo = formData.get('rollNo');
         const name = formData.get('name');
-        const password = formData.get('password');
+        const yearOfGraduation = formData.get('yearOfGraduation');
         const branch = formData.get('branch');
         try {
-            const response = await axios.post('/api/createProfile', { rollNo, name, password, branch, email, roleRequested: Role.Student });
-            if (response.status === 200) {
-                alert('Form submitted successfully , you will be notified about the librarian\'s response ');
+            const response = await axios.post('/api/public/createProfile', { rollNo, name, yearOfGraduation, branch, email, roleRequested: Role.Student });
+
+            console.log(response);
+
+            const data = await response.data;
+
+            if (response.status === 201) {
+                alert('Profile created successfully. ');
+                window.location.reload();
             }
             else {
-                alert('internal server error , try again later.');
+                //@ts-ignore
+                alert(data.msg);
             }
         }
         catch (e) {
@@ -66,15 +73,42 @@ const Profile = () => {
 
                 <div>
                     <label htmlFor='password'> Year Of Graduation     </label>  <br />
-                    <input name='password' type='text' required placeholder={profile.yearOfGraduation} disabled />
+                    <input name='password' type='' required placeholder={profile.yearOfGraduation} disabled />
                 </div>
 
                 <div> You must have a library card to borrow books. </div>
 
-                {!role && <div> Apply to issue a library card.  <button onClick={async () => { await axios.post('/api/applyForRole', { roleRequested: Role.Student }) }}  > Click here  </button>
+                {!role && <div> Apply to issue a library card.  <button onClick={async () => {
+                    try {
+                        const response = await axios.post('/api/public/applyForRole', { roleRequested: Role.Student });
+                        const data = await response.data;
+                        //@ts-ignore
+                        alert(data.msg);
+                    }
+                    catch (e) {
+                        console.log(e);
+                        alert("an error occured " + JSON.stringify(e))
+                    }
+
+                }} > Click here  </button>
                 </div>}
 
-                {role === Role.Student && <button onClick={async () => { await axios.post('/api/applyForRole'), { roleRequested: Role.Librarian } }} > Apply to become a librarian </button>}
+                {role === Role.Student &&
+                    <button
+                        onClick={async () => {
+                            try {
+                                const response = await axios.post('/api/public/applyForRole', { roleRequested: Role.Librarian });
+                                const data = await response.data;
+                                //@ts-ignore
+                                alert(data.msg);
+                            }
+                            catch (e) {
+                                console.log(e);
+                                alert("an error occured " + JSON.stringify(e))
+                            }
+                        }}>
+                        Apply to become a librarian
+                    </button>}
 
             </div>
         )
@@ -105,8 +139,8 @@ const Profile = () => {
                         </div>
 
                         <div>
-                            <label htmlFor='password'> Year Of Graduation     </label>  <br />
-                            <input name='password' type='text' required placeholder='2027' />
+                            <label htmlFor='yearOfGraduation'> Year Of Graduation     </label>  <br />
+                            <input name='yearOfGraduation' type='number' required placeholder='2027' />
                         </div>
 
                         <div>

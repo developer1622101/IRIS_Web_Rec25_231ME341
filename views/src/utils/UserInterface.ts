@@ -13,4 +13,5 @@ export interface UserInterface {
   role?: Role
   profile?: Profile
   id?: string
+  banned?: boolean
 }

@@ -7,6 +7,8 @@ export const createProfileContoller = async (req: Request, res: Response) => {
   } else {
     const { name, rollNo, yearOfGraduation, branch } = req.body
 
+    console.log(name + rollNo + yearOfGraduation + branch)
+
     const prisma = new PrismaClient()
     try {
       if (req.userId && name && rollNo && yearOfGraduation && branch) {
@@ -17,6 +19,7 @@ export const createProfileContoller = async (req: Request, res: Response) => {
       }
       return res.status(400).json({ msg: 'Missing required fields.' })
     } catch (e) {
+      console.log(e)
       return res.status(500).json({ msg: 'Internal server error' })
     } finally {
       ;async () => await prisma.$disconnect()

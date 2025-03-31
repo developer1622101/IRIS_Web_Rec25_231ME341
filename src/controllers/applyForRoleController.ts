@@ -20,7 +20,7 @@ export const applyForRoleController = async (req: Request, res: Response) => {
 
   try {
     if (req.userId) {
-      const verification = await prisma.verifications.findFirst({
+      const verification = await prisma.application.findFirst({
         where: { userId: req.userId, roleRequested }
       })
 
@@ -30,10 +30,12 @@ export const applyForRoleController = async (req: Request, res: Response) => {
         })
       }
 
-      await prisma.verifications.create({
+      await prisma.application.create({
         data: { userId: req.userId, currentRole: req.role, roleRequested }
       })
-      return res.status(200).json({ msg: 'Application sent for verification.' })
+      return res.status(201).json({
+        msg: 'Application created successfully and sent  for verification.'
+      })
     }
   } catch (e) {
     return res.status(500).json({ msg: 'Internal server error.' })

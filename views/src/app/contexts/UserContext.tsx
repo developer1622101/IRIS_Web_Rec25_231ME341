@@ -19,7 +19,7 @@ const useUser = () => {
   }
 }
 
-const getUser = () => {
+const useGetUser = () => {
 
   const UserContextState = useContext(UserContext);
   if (UserContextState) {
@@ -31,4 +31,4 @@ const getUser = () => {
   }
 }
 
-export { useUser, UserContext, getUser }
+export { useUser, UserContext, useGetUser }

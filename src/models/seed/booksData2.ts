@@ -616,8 +616,8 @@ const seedBooksDatabase = async () => {
 
           const coversArray: number[] = e.covers || []
 
-          if (index === 1) {
-            // only the first item will be added to the books  table.
+          if (index === 5) {
+            // only the middle item will be added to the books  table.
 
             console.log('first entry ')
             await prisma.book.create({

@@ -1,5 +1,5 @@
 import React from 'react'
-import { getUser } from './contexts/UserContext'
+import { useGetUser } from './contexts/UserContext'
 
 import axios from 'axios';
 
@@ -7,7 +7,7 @@ import { Role } from '@prisma/client';
 
 const IssueCard = () => {
 
-    const userDetails = getUser();
+    const userDetails = useGetUser();
 
     const role = userDetails.role;
 

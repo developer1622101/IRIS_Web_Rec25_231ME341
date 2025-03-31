@@ -13,14 +13,26 @@ enum Role {
     Admin
 }
 
+enum Status {
+    Pending
+    Declined
+    Accepted
+}
+
+enum BookStatus {
+    Hidden
+    Public
+}
+
 model User {
-    id            Int             @id @default(autoincrement())
-    email         String          @unique
-    password      String
-    tokens        Token[]
-    role          Role?
-    Verifications Verifications[]
-    Profile       Profile?
+    id           Int           @id @default(autoincrement())
+    email        String        @unique
+    password     String
+    tokens       Token[]
+    role         Role?
+    Applications Application[]
+    Profile      Profile?
+    banned       Boolean       @default(false)
 }
 
 model Profile {
@@ -56,6 +68,7 @@ model BookWithEdition {
     translation_of  String?
     latest_revision Int?
     revision        Int?
+    bookStatus      BookStatus  @default(Public)
 }
 
 model Book {
@@ -71,6 +84,7 @@ model Book {
     totalCount     Int
     availableCount Int
     cover          Cover[]
+    bookStatus     BookStatus  @default(Public)
 }
 
 model Publisher {
@@ -114,11 +128,12 @@ model Session {
     email String
 }
 
-model Verifications {
+model Application {
     id            Int      @id @default(autoincrement())
     userId        Int
     User          User     @relation(fields: [userId], references: [id])
     currentRole   Role?
     roleRequested Role
     createdAt     DateTime @default(now())
+    status        Status   @default(Pending)
 }

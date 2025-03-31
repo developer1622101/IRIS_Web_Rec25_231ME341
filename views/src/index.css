@@ -4,6 +4,16 @@
     color :white
 }
 
+input {  
+
+    color : black ;
+
+}
+
+button { 
+    color : red
+}
+
 .headerDiv a{ 
      font-size: large;   
      padding: 5px;  
@@ -23,11 +33,6 @@
 
 }
 
-
-.headerDiv   div { 
-    display: flex; 
-    gap: 5px ;    
- } 
 
  .headerDiv div input { 
     background-color: white ; 
@@ -51,7 +56,7 @@
 }
 
 .book {  
-    height: 400px;
+    height: 450px;
      display: flex; 
      flex-direction:column; 
      justify-content: space-between;
@@ -80,9 +85,9 @@
     justify-content:space-between ;
 }
 
-.AppContainer { 
-    padding-top: 50px ; 
-    background-color: #201F31; 
+.AppContainer {
+    background-color: #201F31;  
+    padding : 50px 10px 10px 10px    ; 
 }
 
 .filterText {  
@@ -127,7 +132,9 @@
 }
 
 
-.searchBar { 
+.searchBar {  
+    display:  flex; 
+    gap : 5px ; 
     border: 1px solid white ;  
     padding: 2px 5px ; 
     border-radius: 5px;
