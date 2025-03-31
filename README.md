@@ -1,4 +1,49 @@
-# IRIS_Web_Rec25_231ME341 
+
+
+# IRIS_Web_Rec25_231ME341  
+
+
+## screen recordings in public directory 
+
+## installation instructions :  
+   -  git clone ...link... 
+   -  from root 
+       -   1. npm install 
+           2. cd views && npm install
+ 
+## To run  
+ -   Build frontend files and run server , if changes to frontend  -> npm run start   
+
+ -   If changes in backend -> tsc  
+
+ -   Only -> npm run server 
+
+
+
+## Implemented features : 
+   -  Authentication / Authorisation  
+      -  All features listed  in  docs.
+      -  Except:   
+            - Librarian can add new books and journals.
+            - No duration for ban.
+   -  Books and Journals 
+       - All features listed  in  docs.
+       - Except: 
+            - No further borrowing can be done of the same book
+            - No implementation of journals.
+   -  Dues Management 
+       - Automatic dues updating  using node-cron. file location : /src/models/schedules/updateDues.ts
+       
+
+
+# references 
+- 'https://medium.com/developer-rants/   follow-up-how-to-tell-if-an-object-conforms-to-a-typescript-interface-f99b4b77d602' 
+   To match object keys with an interface.
+- api for books data - 'https://openlibrary.org' , Data seeded -> /src/models/seed/bookData2.js
+
+
+
+
 
 - Backend in src directory.     
   - Express 
@@ -157,9 +202,9 @@
 ## This data is stored and modified  using the useUser hook from userContext. 
 
 
+## Backend of Auth is completed , Frontend of auth  is incomplete so errors are present in few frontend files.  
 
-  
+# 31 march 
+##  A lot of changes made. Refactored backend. Just finished on 31 march.
 
 
-
-## Backend of Auth is completed , Frontend of auth  is incomplete so errors are present in few frontend files. 
