@@ -16,7 +16,7 @@
 
  -   If changes in backend -> tsc  
 
- -   Only -> npm run server 
+ -   run the app  -> npm run server 
 
 
 
@@ -42,7 +42,7 @@
 - api for books data - 'https://openlibrary.org' , Data seeded -> /src/models/seed/bookData2.js
 
 
-
+# extra..
 
 
 - Backend in src directory.     
