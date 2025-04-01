@@ -5,6 +5,12 @@
 
 ## screen recordings in public directory 
 
+## Role Email Password 
+## Student praveenbhosle1622@gmail.com praveen@2006
+## Librarian test123@gmail.com hi_there_124
+## Admin    test123@gmail.com hi_there_124 
+
+
 ## installation instructions :  
    -  git clone ...link... 
    -  from root 
